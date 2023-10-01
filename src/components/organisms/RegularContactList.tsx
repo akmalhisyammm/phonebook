@@ -9,7 +9,8 @@ import { Button, IconButton } from '@/components/atoms';
 import { ContactCard } from '@/components/molecules';
 
 const RegularContactList = () => {
-  const contactCtx = useContext(ContactContext);
+  const { regulars } = useContext(ContactContext);
+
   const router = useRouter();
   const { limit, offset } = router.query;
 
@@ -28,7 +29,7 @@ const RegularContactList = () => {
           New Contact
         </Button>
       </div>
-      {!contactCtx.regulars.isLoading ? (
+      {!regulars.isLoading ? (
         <div css={css({ display: 'flex', flexDirection: 'column', gap: 12 })}>
           <div
             css={css({
@@ -69,8 +70,8 @@ const RegularContactList = () => {
               onChange={handleLimitSelectChange}
             />
           </div>
-          {contactCtx.regulars.data.length ? (
-            contactCtx.regulars.data.map((contact) => (
+          {regulars.data.length ? (
+            regulars.data.map((contact) => (
               <ContactCard key={contact.id} type="regular" contact={contact} />
             ))
           ) : (
@@ -92,7 +93,7 @@ const RegularContactList = () => {
             <IconButton
               icon={<FaChevronRight />}
               aria-label="next contact"
-              disabled={contactCtx.regulars.data.length < Number(limit || 10)}
+              disabled={regulars.data.length < Number(limit || 10)}
               isFullWidth
               onClick={() =>
                 router.push({

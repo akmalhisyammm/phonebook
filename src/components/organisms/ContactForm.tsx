@@ -8,27 +8,61 @@ import { ContactContext } from '@/contexts/contact';
 import { IconButton, Button } from '@/components/atoms';
 import { InputGroup } from '@/components/molecules';
 
-import type { ContactPayload } from '@/types/contact';
+import type { ContactDetail, ContactPayload } from '@/types/contact';
 
-const ContactForm = () => {
-  const [isShowPhones, setIsShowPhones] = useState<boolean[]>([true]);
+type ContactFormProps = {
+  contact?: ContactDetail;
+};
+
+const ContactForm = ({ contact }: ContactFormProps) => {
+  const [isShowPhones, setIsShowPhones] = useState<boolean[]>(
+    contact?.phones.map(() => true) || [true],
+  );
+
+  const { createContact, createPhoneNumber, updateContact, updatePhoneNumber } =
+    useContext(ContactContext);
+
+  const router = useRouter();
+
   const {
     register,
     unregister,
+    watch,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues: { first_name: '', last_name: '', phones: [{ number: '' }] } });
-  const contactCtx = useContext(ContactContext);
-  const router = useRouter();
+  } = useForm({
+    defaultValues: {
+      first_name: contact?.first_name || '',
+      last_name: contact?.last_name || '',
+      phones: contact?.phones || [{ number: '' }],
+    },
+  });
 
   const onSubmit: SubmitHandler<ContactPayload> = (data) => {
-    contactCtx.create({ ...data, phones: data.phones.filter(Boolean) });
+    if (!contact) {
+      createContact({ ...data, phones: data.phones.filter((phone) => !!phone.number) });
+    } else {
+      updateContact(contact.id, {
+        first_name: data.first_name,
+        last_name: data.last_name,
+      });
+      data.phones
+        .filter((phone) => !!phone.number)
+        .forEach((phone, idx) => {
+          idx < contact.phones.length
+            ? updatePhoneNumber(contact.id, {
+                old_number: contact.phones[idx].number,
+                new_number: phone.number,
+              })
+            : createPhoneNumber(contact.id, { number: phone.number });
+        });
+    }
     router.push('/');
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <h2>Add Contact</h2>
+      <h2>{!contact ? 'Add' : 'Edit'} Contact</h2>
       <div
         css={css({
           display: 'flex',
@@ -114,22 +148,34 @@ const ContactForm = () => {
                           value: /^[0-9]+$/i,
                           message: 'Phone number must be numeric',
                         },
+                        validate: (value) => {
+                          const phoneNumbers = watch('phones');
+                          const isDuplicate = phoneNumbers
+                            .filter((phone) => !!phone.number)
+                            .map((phone) => phone.number)
+                            .filter((_, phoneIdx) => phoneIdx !== idx)
+                            .includes(value);
+                          return !isDuplicate || 'Phone number must be unique';
+                        },
                       })}
                     />
-                    <IconButton
-                      type="button"
-                      variant="ghost"
-                      color="secondary"
-                      icon={<FaTrashAlt />}
-                      aria-label="delete phone"
-                      disabled={isShowPhones.filter((show) => show).length === 1}
-                      onClick={() => {
-                        const newIsShowPhones = [...isShowPhones];
-                        newIsShowPhones.splice(idx, 1, false);
-                        unregister(`phones.${idx}.number`);
-                        setIsShowPhones(newIsShowPhones);
-                      }}
-                    />
+                    {!contact && (
+                      <IconButton
+                        type="button"
+                        variant="ghost"
+                        color="secondary"
+                        icon={<FaTrashAlt />}
+                        aria-label="delete phone"
+                        disabled={isShowPhones.filter((show) => show).length === 1}
+                        onClick={() => {
+                          const newIsShowPhones = [...isShowPhones];
+                          newIsShowPhones.splice(idx, 1, false);
+                          unregister(`phones.${idx}.number`);
+                          setIsShowPhones(newIsShowPhones);
+                          console.log(newIsShowPhones);
+                        }}
+                      />
+                    )}
                   </div>
                   {errors.phones?.[idx]?.number && (
                     <small css={css({ color: '#F94D63' })}>
