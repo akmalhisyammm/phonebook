@@ -1,7 +1,8 @@
 import { useQuery } from '@apollo/client';
 
 import { GET_CONTACT_LIST } from '@/constants/query';
-import { ContactDetail } from '@/types/contact';
+
+import type { ContactDetail } from '@/types/contact';
 
 type ContactQueryProps = {
   type: 'favorite' | 'regular';

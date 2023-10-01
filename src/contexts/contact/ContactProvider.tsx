@@ -1,8 +1,9 @@
 import { useRouter } from 'next/router';
 
-import { ContactDetail, ContactPayload } from '@/types/contact';
 import { useContactMutation, useContactQuery } from '@/hooks/contact';
 import { ContactContext } from './ContactContext';
+
+import type { ContactDetail, ContactPayload } from '@/types/contact';
 
 type ContactProviderProps = {
   children: React.ReactNode;

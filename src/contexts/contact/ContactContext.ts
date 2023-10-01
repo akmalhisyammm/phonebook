@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import { ContactDetail, ContactPayload } from '@/types/contact';
+import type { ContactDetail, ContactPayload } from '@/types/contact';
 
 type Context = {
   favorites: {
