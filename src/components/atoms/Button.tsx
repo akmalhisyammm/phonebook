@@ -1,34 +1,39 @@
 import { css } from '@emotion/react';
 
-type IconButtonProps = {
-  icon: React.ReactNode;
+type ButtonProps = {
+  icon?: React.ReactNode;
   variant?: 'contained' | 'outlined' | 'ghost';
   color?: 'primary' | 'secondary';
-  isFullWidth?: boolean;
+  children: React.ReactNode;
   [key: string]: unknown;
 };
 
-const IconButton = ({
+const Button = ({
   icon,
   variant = 'contained',
   color = 'primary',
-  isFullWidth,
+  children,
   ...rest
-}: IconButtonProps) => {
+}: ButtonProps) => {
   return (
     <button
       css={css({
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '8px 14px',
-        width: isFullWidth ? '100%' : 'auto',
-        fontSize: 20,
+        padding: '10px 14px',
+        fontSize: 16,
         borderRadius: 8,
-        border: variant !== 'ghost' ? '1px solid #03AC0E' : 'none',
+        border:
+          variant !== 'ghost'
+            ? color === 'primary'
+              ? '1px solid #03AC0E'
+              : '1px solid #F94D63'
+            : 'none',
         backgroundColor:
           variant === 'contained' ? (color === 'primary' ? '#03AC0E' : '#F94D63') : 'transparent',
         color: variant === 'contained' ? 'white' : color === 'primary' ? '#03AC0E' : '#F94D63',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 8,
         cursor: 'pointer',
         transition: 'all 0.2s ease-out',
         '&:hover': {
@@ -37,15 +42,12 @@ const IconButton = ({
         '&:active': {
           opacity: 0.6,
         },
-        '&:disabled': {
-          opacity: 0.6,
-          cursor: 'not-allowed',
-        },
       })}
       {...rest}>
-      <span css={css({ paddingTop: 3 })}>{icon}</span>
+      {!!icon && <span css={css({ paddingTop: 3 })}>{icon}</span>}
+      {children}
     </button>
   );
 };
 
-export default IconButton;
+export default Button;
