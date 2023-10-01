@@ -1,12 +1,13 @@
 import { useContext, useState } from 'react';
 import { css } from '@emotion/react';
-import { FaStar, FaRegStar, FaTrashAlt } from 'react-icons/fa';
+import { FaStar, FaRegStar, FaTrashAlt, FaEdit } from 'react-icons/fa';
 
 import { ContactContext } from '@/contexts/contact';
 import { IconButton } from '@/components/atoms';
 import { ConfirmationModal } from '@/components/molecules';
 
 import type { ContactDetail } from '@/types/contact';
+import { useRouter } from 'next/router';
 
 type ContactCardProps = {
   type: 'favorite' | 'regular';
@@ -16,7 +17,9 @@ type ContactCardProps = {
 const ContactCard = ({ type, contact }: ContactCardProps) => {
   const [isShowDeleteModal, setIsShowDeleteModal] = useState<boolean>(false);
 
-  const contactCtx = useContext(ContactContext);
+  const { destroyContact, toggleFavorite } = useContext(ContactContext);
+
+  const router = useRouter();
 
   return (
     <div>
@@ -43,7 +46,13 @@ const ContactCard = ({ type, contact }: ContactCardProps) => {
             variant="ghost"
             icon={type === 'favorite' ? <FaStar /> : <FaRegStar />}
             aria-label="toggle favorite"
-            onClick={() => contactCtx.toggle(contact)}
+            onClick={() => toggleFavorite(contact)}
+          />
+          <IconButton
+            variant="ghost"
+            icon={<FaEdit />}
+            aria-label="edit contact"
+            onClick={() => router.push(`/edit/${contact.id}`)}
           />
           <IconButton
             variant="ghost"
@@ -57,7 +66,7 @@ const ContactCard = ({ type, contact }: ContactCardProps) => {
       <ConfirmationModal
         isOpen={isShowDeleteModal}
         name={contact.first_name + ' ' + contact.last_name}
-        action={() => contactCtx.destroy(contact.id)}
+        action={() => destroyContact(contact.id)}
         onDismiss={() => setIsShowDeleteModal(false)}
       />
     </div>

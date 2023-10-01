@@ -5,15 +5,15 @@ import { ContactContext } from '@/contexts/contact';
 import { ContactCard } from '@/components/molecules';
 
 const FavoriteContactList = () => {
-  const contactCtx = useContext(ContactContext);
+  const { favorites } = useContext(ContactContext);
 
   return (
     <div css={css({ margin: '12px 0' })}>
       <h2>Favorites</h2>
-      {!contactCtx.favorites.isLoading ? (
+      {!favorites.isLoading ? (
         <div css={css({ display: 'flex', flexDirection: 'column', gap: 12 })}>
-          {contactCtx.favorites.data.length ? (
-            contactCtx.favorites.data.map((contact) => (
+          {favorites.data.length ? (
+            favorites.data.map((contact) => (
               <ContactCard key={contact.id} type="favorite" contact={contact} />
             ))
           ) : (

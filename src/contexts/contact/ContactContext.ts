@@ -11,15 +11,33 @@ type Context = {
     data: ContactDetail[];
     isLoading: boolean;
   };
-  create: (payload: ContactPayload) => void;
-  destroy: (id: number) => void;
-  toggle: (payload: ContactDetail) => void;
+  createContact: (payload: ContactPayload) => void;
+  createPhoneNumber: (id: number, payload: { number: string }) => void;
+  updateContact: (
+    id: number,
+    payload: {
+      first_name?: string;
+      last_name?: string;
+    },
+  ) => void;
+  updatePhoneNumber: (
+    id: number,
+    payload: {
+      old_number: string;
+      new_number: string;
+    },
+  ) => void;
+  destroyContact: (id: number) => void;
+  toggleFavorite: (payload: ContactDetail) => void;
 };
 
 export const ContactContext = createContext<Context>({
   favorites: { data: [], isLoading: false },
   regulars: { data: [], isLoading: false },
-  create: () => null,
-  destroy: () => null,
-  toggle: () => null,
+  createContact: () => null,
+  createPhoneNumber: () => null,
+  updateContact: () => null,
+  updatePhoneNumber: () => null,
+  destroyContact: () => null,
+  toggleFavorite: () => null,
 });
