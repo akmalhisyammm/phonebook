@@ -36,8 +36,7 @@ const ContactFilter = () => {
           onChange={handleSearchInputChange}
         />
         <IconButton
-          variant="primary"
-          color="primary"
+          variant="outlined"
           icon={order === 'desc' ? <FaSortAmountUp /> : <FaSortAmountDownAlt />}
           aria-label="sort contact"
           onClick={() =>
