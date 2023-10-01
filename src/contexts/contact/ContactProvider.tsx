@@ -30,18 +30,58 @@ export const ContactProvider = ({ children }: ContactProviderProps) => {
     order: order?.toString(),
     search: search?.toString(),
   });
-  const addContact = useContactMutation({ type: 'create' });
-  const deleteContact = useContactMutation({ type: 'delete' });
+  const addContact = useContactMutation({ type: 'create_contact' });
+  const addPhoneNumber = useContactMutation({ type: 'create_phone_number' });
+  const editContact = useContactMutation({ type: 'update_contact' });
+  const editPhoneNumber = useContactMutation({ type: 'update_phone_number' });
+  const deleteContact = useContactMutation({ type: 'delete_contact' });
 
-  const create = (payload: ContactPayload) => {
+  const createContact = (payload: ContactPayload) => {
     addContact.action({ variables: payload });
   };
 
-  const destroy = (id: number) => {
+  const createPhoneNumber = (id: number, payload: { number: string }) => {
+    addPhoneNumber.action({ variables: { contact_id: id, phone_number: payload.number } });
+  };
+
+  const updateContact = (
+    id: number,
+    payload: {
+      first_name?: string;
+      last_name?: string;
+      old_phone_number?: string;
+      new_phone_number?: string;
+    },
+  ) => {
+    editContact.action({
+      variables: { id, _set: { first_name: payload.first_name, last_name: payload.last_name } },
+    });
+  };
+
+  const updatePhoneNumber = (
+    id: number,
+    payload: {
+      old_number?: string;
+      new_number?: string;
+    },
+  ) => {
+    console.log({
+      pk_columns: { number: payload.old_number, contact_id: id },
+      new_phone_number: payload.new_number,
+    });
+    editPhoneNumber.action({
+      variables: {
+        pk_columns: { number: payload.old_number, contact_id: id },
+        new_phone_number: payload.new_number,
+      },
+    });
+  };
+
+  const destroyContact = (id: number) => {
     deleteContact.action({ variables: { id } });
   };
 
-  const toggle = (payload: ContactDetail) => {
+  const toggleFavorite = (payload: ContactDetail) => {
     const newFavorites = favorites.map((contact) => contact.id).includes(payload.id)
       ? favorites.filter((contact) => contact.id !== payload.id)
       : [...favorites, payload];
@@ -63,9 +103,12 @@ export const ContactProvider = ({ children }: ContactProviderProps) => {
           data: filteredRegulars.data?.contact || [],
           isLoading: filteredRegulars.loading,
         },
-        create,
-        destroy,
-        toggle,
+        createContact,
+        createPhoneNumber,
+        updateContact,
+        updatePhoneNumber,
+        destroyContact,
+        toggleFavorite,
       }}>
       {children}
     </ContactContext.Provider>
