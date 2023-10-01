@@ -5,8 +5,8 @@ import { FaPlus, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import Select, { type SingleValue } from 'react-select';
 
 import { ContactContext } from '@/contexts/contact';
-import { IconButton } from '@/components/atoms';
-import { ButtonGroup, ContactCard } from '@/components/molecules';
+import { Button, IconButton } from '@/components/atoms';
+import { ContactCard } from '@/components/molecules';
 
 const RegularContactList = () => {
   const contactCtx = useContext(ContactContext);
@@ -24,9 +24,9 @@ const RegularContactList = () => {
     <div css={css({ margin: '12px 0' })}>
       <div css={css({ display: 'flex', justifyContent: 'space-between', alignItems: 'center' })}>
         <h2>Regulars</h2>
-        <ButtonGroup aria-labelledby="add new contact" icon={<FaPlus />}>
+        <Button icon={<FaPlus />} aria-label="add new contact" onClick={() => router.push('/add')}>
           New Contact
-        </ButtonGroup>
+        </Button>
       </div>
       {!contactCtx.regulars.isLoading ? (
         <div css={css({ display: 'flex', flexDirection: 'column', gap: 12 })}>
@@ -78,8 +78,6 @@ const RegularContactList = () => {
           )}
           <div css={css({ display: 'flex', gap: 12 })}>
             <IconButton
-              variant="primary"
-              color="primary"
               icon={<FaChevronLeft />}
               aria-label="previous contact"
               disabled={!offset || Number(offset) === 0 || Number(offset) - 10 < 0}
@@ -92,8 +90,6 @@ const RegularContactList = () => {
               }
             />
             <IconButton
-              variant="primary"
-              color="primary"
               icon={<FaChevronRight />}
               aria-label="next contact"
               disabled={contactCtx.regulars.data.length < Number(limit || 10)}

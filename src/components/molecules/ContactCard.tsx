@@ -4,7 +4,8 @@ import { FaStar, FaRegStar, FaTrashAlt } from 'react-icons/fa';
 
 import { ContactContext } from '@/contexts/contact';
 import { IconButton } from '@/components/atoms';
-import { ContactDetail } from '@/types/contact';
+
+import type { ContactDetail } from '@/types/contact';
 
 type ContactCardProps = {
   type: 'favorite' | 'regular';
@@ -25,7 +26,7 @@ const ContactCard = ({ type, contact }: ContactCardProps) => {
         borderRadius: 8,
         border: '1px solid #BFC9D9',
         backgroundColor: 'white',
-        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);',
+        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
       })}>
       <div>
         <h3>{contact.first_name + ' ' + contact.last_name}</h3>
@@ -35,14 +36,13 @@ const ContactCard = ({ type, contact }: ContactCardProps) => {
       </div>
       <div css={css({ display: 'flex', justifyContent: 'space-between', alignItems: 'center' })}>
         <IconButton
-          variant="secondary"
-          color="primary"
+          variant="ghost"
           icon={type === 'favorite' ? <FaStar /> : <FaRegStar />}
           aria-label="toggle favorite"
           onClick={() => contactCtx.toggle(contact)}
         />
         <IconButton
-          variant="secondary"
+          variant="ghost"
           color="secondary"
           icon={<FaTrashAlt />}
           aria-label="delete contact"

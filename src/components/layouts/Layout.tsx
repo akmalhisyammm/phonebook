@@ -15,7 +15,7 @@ const Layout = ({ children }: LayoutProps) => {
         css={css({
           position: 'relative',
           maxWidth: '1200px',
-          margin: '22px auto',
+          margin: '28px auto',
           padding: '0 8px',
           marginBottom: 100,
           top: 70,
